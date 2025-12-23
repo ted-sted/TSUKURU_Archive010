@@ -944,125 +944,8 @@ miniAudio.addEventListener("ended", hideMiniPlayer);
 (() => {
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const fmt = new Intl.NumberFormat('ja-JP');
-
-  function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
-
-  function animateNumber(el, to, ms){
-    if (!el) return;
-    if (reduceMotion){ el.textContent = fmt.format(to); return; }
-    const start = performance.now();
-    const from = 0;
-    const tick = (now) => {
-      const t = Math.min(1, (now - start) / ms);
-      const v = Math.round(from + (to - from) * easeOutCubic(t));
-      el.textContent = fmt.format(v);
-      if (t < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }
-
   /* ---------- progress ring ---------- */
   // initProgressRing removed (right-bottom ring deleted)
-
-  /* ---------- KPI boot overlay ---------- */
-  
-  function getHeroIndustries(){
-    const stats = Array.from(document.querySelectorAll('.hero-stat'));
-    for (const s of stats){
-      const lbl = (s.querySelector('.hero-stat-label')?.textContent || '').trim();
-      if (lbl === '成分'){
-        const v = (s.querySelector('.hero-stat-value')?.textContent || '').trim();
-        const m = v.match(/(\d+)/);
-        if (m) return Number(m[1]);
-      }
-    }
-    return null;
-  }
-
-  function getHeroTotalDays(){
-    const el = document.getElementById('career-span-text');
-    if (!el) return null;
-    const txt = (el.textContent || '').trim();
-    const m = txt.match(/([\d,]+)\s*日/);
-    if (!m) return null;
-    const n = Number(m[1].replace(/,/g,''));
-    return Number.isFinite(n) ? n : null;
-  }
-
-function computeKpisFromTable(){
-    const tbody = document.getElementById('career-table-body');
-    if (!tbody) return null;
-    const rows = Array.from(tbody.querySelectorAll('tr'));
-    if (!rows.length) return null;
-
-    const industries = rows.length;
-
-    let totalDays = 0;
-    for (const r of rows){
-      const td = r.children && r.children[1];
-      const txt = (td ? td.textContent : '') || '';
-      const n = Number(String(txt).replace(/[^\d]/g,''));
-      if (!Number.isNaN(n)) totalDays += n;
-    }
-    if (!industries || !totalDays) return null;
-    return { industries, totalDays };
-  }
-
-  function initKpiBoot(){
-    // 既存JS（上部の累計日数表示）が先に入っている前提で、まずはトップ表示と一致させる
-    const heroIndustries = getHeroIndustries();
-    const heroTotalDays = getHeroTotalDays();
-
-    // テーブルが取れるなら業種数の裏取りに使う（無い場合はトップ表示から）
-    const tableKpis = computeKpisFromTable();
-
-    const industries = (heroIndustries ?? tableKpis?.industries);
-    // “累計日数”はトップ画面表示（career-span-text）を最優先
-    const totalDays = (heroTotalDays ?? tableKpis?.totalDays);
-
-    if (!industries || !totalDays) return;
-
-    // 1回だけ
-    if (document.querySelector('.kpiBoot')) return;
-
-    const boot = document.createElement('div');
-    boot.className = 'kpiBoot';
-    boot.innerHTML = `
-      <div class="kpiBootInner" role="status" aria-live="polite">
-        <p class="kpiBootTitle">成分集計中</p>
-        <div class="kpiGrid">
-          <div class="kpiCard"><div class="kpiNum" data-k="ind">0</div><div class="kpiLbl">業種</div></div>
-          <div class="kpiCard"><div class="kpiNum" data-k="day">0</div><div class="kpiLbl">累計日数</div></div>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(boot);
-
-    const indEl = boot.querySelector('[data-k="ind"]');
-    const dayEl = boot.querySelector('[data-k="day"]');
-
-    // 少し遅めに（体感：じっくり）
-    const indMs = 1200;
-    const dayMs = 1900;
-    const delay = 180;
-
-    setTimeout(() => {
-      animateNumber(indEl, industries, indMs);
-      animateNumber(dayEl, totalDays, dayMs);
-    }, delay);
-
-    const totalShow = delay + Math.max(indMs, dayMs) + 520;
-
-    setTimeout(() => {
-      if (reduceMotion){
-        boot.remove();
-        return;
-      }
-      boot.animate([{opacity:1},{opacity:0}], { duration: 420, easing: 'cubic-bezier(.2,.8,.2,1)' })
-        .finished.then(() => boot.remove());
-    }, totalShow);
-  }
 
   /* ---------- scroll lock (prevents background scroll) ---------- */
   let scrollLockY = 0;
@@ -1604,7 +1487,6 @@ addEventListener('DOMContentLoaded', ()=>{
   initHeaderMetrics();
 // テーブルが埋まるのを一拍待ってから集計（既存JSの後）
     requestAnimationFrame(() => {
-      initKpiBoot();
       initFocusPanel();
     });
   });
