@@ -99,6 +99,134 @@
         days: index < baseDays.length ? baseDays[index] : azenDays
       }));
 
+      const openingOverlay = document.getElementById("opening-overlay");
+      const openingLine = document.getElementById("opening-line");
+      const openingProgressBar = document.getElementById("opening-progress-bar");
+      if (openingOverlay && openingLine && openingProgressBar) {
+        const openingItems = entries.map((entry, index) => ({
+          index: index + 1,
+          label: entry.label,
+          days: entry.days
+        }));
+        const dayFormatter = new Intl.NumberFormat("ja-JP");
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const totalSteps = openingItems.length + 1;
+
+        const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+        const countUp = (to, duration, render, onProgress) => new Promise(resolve => {
+          if (reduceMotion) {
+            render(to);
+            if (onProgress) onProgress(1);
+            resolve();
+            return;
+          }
+          const start = performance.now();
+          const from = 1;
+          const tick = (now) => {
+            const t = Math.min(1, (now - start) / duration);
+            const eased = easeOutCubic(t);
+            const value = Math.max(from, Math.round(from + (to - from) * eased));
+            render(value);
+            if (onProgress) onProgress(t);
+            if (t < 1) {
+              requestAnimationFrame(tick);
+            } else {
+              resolve();
+            }
+          };
+          requestAnimationFrame(tick);
+        });
+
+        const durationForDays = (days, isTotal) => {
+          const min = 600;
+          const max = 1200;
+          const scale = Math.min(1, days / 3500);
+          const base = isTotal ? 900 : 650;
+          return Math.round(Math.min(max, Math.max(min, base + scale * 450)));
+        };
+
+        let openingState = "idle";
+        let skipRequested = false;
+
+        const setProgress = (value) => {
+          const clamped = Math.max(0, Math.min(1, value));
+          openingProgressBar.style.width = (clamped * 100).toFixed(2) + "%";
+        };
+
+        const closeOverlay = () => {
+          const finish = () => {
+            openingOverlay.remove();
+            document.body.classList.remove("is-opening");
+            openingState = "closed";
+          };
+          if (reduceMotion) {
+            finish();
+            return;
+          }
+          openingOverlay.classList.add("is-fade");
+          openingOverlay.addEventListener("transitionend", finish, { once: true });
+        };
+
+        const runOpening = async () => {
+          for (const item of openingItems) {
+            if (skipRequested) return;
+            const stepIndex = item.index - 1;
+            await countUp(item.days, durationForDays(item.days, false), (value) => {
+              if (skipRequested) return;
+              openingLine.textContent =
+                "№" + item.index + "　" + item.label + "　" + dayFormatter.format(value) + "日";
+            }, (t) => {
+              if (skipRequested) return;
+              const progress = (stepIndex + t) / totalSteps;
+              setProgress(progress);
+            });
+            await wait(120);
+          }
+
+          if (skipRequested) return;
+          await countUp(careerSpan.totalDays, durationForDays(careerSpan.totalDays, true), (value) => {
+            if (skipRequested) return;
+            openingLine.textContent = "合計日数　" + dayFormatter.format(value) + "日";
+          }, (t) => {
+            if (skipRequested) return;
+            const progress = (openingItems.length + t) / totalSteps;
+            setProgress(progress);
+          });
+
+          if (skipRequested) return;
+          openingLine.textContent =
+            "合計日数　" + dayFormatter.format(careerSpan.totalDays) + "日（" +
+            careerSpan.years + "年" + careerSpan.months + "ヶ月" + careerSpan.days + "日）";
+
+          openingState = "done";
+        };
+
+        const start = () => {
+          if (openingState === "running") {
+            skipRequested = true;
+            closeOverlay();
+            return;
+          }
+          if (openingState === "done") {
+            closeOverlay();
+          }
+        };
+
+        document.body.classList.add("is-opening");
+        openingState = "running";
+        openingOverlay.classList.add("is-started");
+        runOpening();
+        openingOverlay.addEventListener("click", start);
+        openingOverlay.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            start();
+          }
+        });
+      }
+
       const totalDaysAll = entries.reduce((sum, e) => sum + e.days, 0);
 
       const cssVar = (name, fallback) => {
