@@ -1324,52 +1324,6 @@ body.modal-open{
   overflow: hidden;
 }
 
-/* KPI boot overlay */
-.kpiBoot{
-  position: fixed;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: rgba(250,250,252,.72);
-  backdrop-filter: blur(10px);
-  z-index: 1200;
-}
-.kpiBootInner{
-  width: min(720px, calc(100vw - 28px));
-  padding: 22px 20px;
-  border-radius: 16px;
-  background: rgba(255,255,255,.86);
-  border: 1px solid rgba(0,0,0,.10);
-  box-shadow: 0 18px 55px rgba(0,0,0,.14);
-}
-.kpiBootTitle{
-  margin: 0 0 10px;
-  font-size: 14px;
-  color: rgba(0,0,0,.60);
-  letter-spacing: .02em;
-}
-.kpiGrid{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-.kpiCard{
-  padding: 14px 14px 16px;
-  border-radius: 14px;
-  border: 1px solid rgba(0,0,0,.10);
-  background: rgba(255,255,255,.78);
-}
-.kpiNum{
-  font-size: 34px;
-  font-weight: 700;
-  letter-spacing: .02em;
-}
-.kpiLbl{
-  margin-top: 4px;
-  font-size: 13px;
-  color: rgba(0,0,0,.60);
-}
-
 /* Progress ring */  
 
 /* Focus panel backdrop */
@@ -1451,7 +1405,6 @@ body.modal-open{
 }
 
 @media (prefers-reduced-motion: reduce){
-  .kpiBoot{ backdrop-filter: none; }
   .focusPanel.is-open{ transition: none; }
 }
 
@@ -1705,21 +1658,6 @@ tbody tr:nth-child(even){
 }
 
 /* Motion patch components adopt palette */
-.kpiBoot{
-  background: rgba(251,250,247,.72);
-}
-.kpiBootInner{
-  background: var(--surface-strong);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow-2);
-}
-.kpiCard{
-  border: 1px solid var(--line);
-  background: rgba(255,255,255,.72);
-}
-.kpiBootTitle{ color: var(--muted); }
-  
-
 .backdrop{ background: rgba(0,0,0,.20); }
 
 .focusPanel{
@@ -1901,19 +1839,6 @@ td{ border-color: rgba(31,35,40,.10) !important; }
 }
 .focusClose{
   border-color: rgba(31,35,40,.16) !important;
-}
-
-/* KPI boot */
-.kpiBoot{
-  background: rgba(251,247,240,.72) !important;
-}
-.kpiBootInner{
-  background: rgba(255,253,249,.86) !important;
-  border-color: rgba(31,35,40,.16) !important;
-}
-.kpiCard{
-  background: rgba(255,253,249,.78) !important;
-  border-color: rgba(31,35,40,.12) !important;
 }
 
 /* minimap (right-side dots) */
