@@ -2297,3 +2297,78 @@ header nav a[aria-current="page"]::after{
     box-shadow: 0 0 0 3px color-mix(in oklab, var(--tl-color) 14%, transparent);
   }
 }
+
+/* Opening overlay */
+body.is-opening{
+  overflow: hidden;
+}
+
+.opening-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 1400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  color: #f8fafc;
+  cursor: pointer;
+  background:
+    radial-gradient(1200px circle at 18% 20%, rgba(56, 189, 248, 0.22), transparent 55%),
+    radial-gradient(900px circle at 82% 12%, rgba(16, 185, 129, 0.18), transparent 55%),
+    linear-gradient(140deg, #0b1220, #111827 55%, #0b1a24);
+  transition: opacity 420ms ease, visibility 420ms ease;
+}
+
+.opening-overlay::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(420px circle at 50% 48%, rgba(56, 189, 248, 0.35), transparent 62%);
+  opacity: 0.7;
+}
+
+.opening-overlay.is-fade{
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.opening-content{
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+}
+
+.opening-title{
+  font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.opening-line{
+  margin-top: 0.85rem;
+  font-size: clamp(1rem, 2.5vw, 1.6rem);
+  font-weight: 700;
+  text-shadow: 0 0 18px rgba(56, 189, 248, 0.35);
+}
+
+.opening-progress{
+  position: relative;
+  width: min(420px, 70vw);
+  height: 6px;
+  margin: 1.2rem auto 0;
+  border-radius: 999px;
+  background: rgba(248, 250, 252, 0.18);
+  overflow: hidden;
+}
+
+.opening-progress-bar{
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(125, 211, 252, 0.2), rgba(56, 189, 248, 0.95));
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.6);
+  transition: width 120ms linear;
+}

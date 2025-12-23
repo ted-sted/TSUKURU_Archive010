@@ -38,6 +38,15 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+  <div id="opening-overlay" class="opening-overlay" role="button" tabindex="0" aria-label="オープニング演出">
+    <div class="opening-content" aria-live="polite">
+      <div class="opening-title">『つくる』アーカイブ</div>
+      <div class="opening-line" id="opening-line"></div>
+      <div class="opening-progress" aria-hidden="true">
+        <div class="opening-progress-bar" id="opening-progress-bar"></div>
+      </div>
+    </div>
+  </div>
   <header>
     <div class="container header-inner">
       <a href="#intro" class="site-title">『つくる』アーカイブ</a>
