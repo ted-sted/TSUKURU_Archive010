@@ -2417,10 +2417,35 @@ body.is-opening{
   min-width: min(340px, 100%);
 }
 
+#intro .hero-stat{
+  padding: 14px 18px !important;
+  min-height: 72px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#intro .hero-stat-label{
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+#intro .hero-stat-value{
+  line-height: 1.25;
+}
+
+#intro .hero-stat:last-child .hero-stat-value{
+  white-space: normal;
+}
+
 @media (max-width: 520px){
   :root{
     --intro-pad-top: 64px;
     --intro-hero-pad: 18px 16px;
+  }
+  #intro .hero-stat{
+    padding: 12px 14px !important;
+    min-height: 0;
   }
 }
 
