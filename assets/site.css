@@ -2297,3 +2297,113 @@ body.is-opening{
   box-shadow: 0 0 16px rgba(56, 189, 248, 0.6);
   transition: width 120ms linear;
 }
+/* =========================================================
+   2025-12 Dynamic Hero Refresh (Intro only)
+   - Neon / glass hero to match opening overlay
+   - Scoped to #intro only
+   ========================================================= */
+#intro{
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(900px 600px at 15% 10%, rgba(56,189,248,.26), transparent 60%),
+    radial-gradient(900px 650px at 85% 18%, rgba(167,139,250,.22), transparent 62%),
+    radial-gradient(700px 520px at 55% 88%, rgba(16,185,129,.18), transparent 62%),
+    linear-gradient(140deg, #050914, #0b1220 55%, #081a24) !important;
+  padding-top: var(--intro-pad-top, revert);
+}
+
+#intro::before{
+  content:"";
+  position:absolute;
+  inset:-45%;
+  pointer-events:none;
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    rgba(56,189,248,.40),
+    rgba(167,139,250,.36),
+    rgba(16,185,129,.30),
+    rgba(56,189,248,.40)
+  );
+  filter: blur(90px);
+  opacity: .18;
+  transform: rotate(0deg);
+  animation: var(--intro-before-anim, none);
+}
+
+#intro::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(600px 320px at 50% 35%, rgba(56,189,248,.18), transparent 62%),
+    radial-gradient(900px 520px at 50% 100%, rgba(2,6,23,.65), transparent 70%);
+  opacity: .9;
+}
+
+#intro > .container{
+  position: relative;
+  z-index: 1;
+}
+
+#intro .hero-main{
+  background: rgba(11,18,32,.72) !important;
+  border: 1px solid rgba(125,211,252,.22) !important;
+  padding: var(--intro-hero-pad, 2rem 1.8rem) !important;
+  box-shadow:
+    0 26px 70px rgba(2,6,23,.55),
+    0 0 0 1px rgba(56,189,248,.08) inset !important;
+  backdrop-filter: blur(14px);
+}
+
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))){
+  #intro .hero-main{ background: rgba(11,18,32,.88) !important; }
+}
+
+#intro h1,
+#intro .hero-subtitle{
+  color: #f8fafc !important;
+}
+
+#intro p{
+  color: rgba(226,232,240,.86) !important;
+}
+
+#intro .hero-tagline{
+  color: rgba(226,232,240,.84) !important;
+  letter-spacing: .06em;
+}
+
+#intro .hero-stat{
+  background: rgba(15,23,42,.52) !important;
+  border: 1px solid rgba(148,163,184,.22) !important;
+  box-shadow: 0 14px 38px rgba(2,6,23,.35) !important;
+}
+
+#intro .hero-stat-label{
+  color: rgba(226,232,240,.72) !important;
+}
+
+#intro .hero-stat-value{
+  color: #f8fafc !important;
+  text-shadow: 0 0 18px rgba(56,189,248,.18);
+}
+
+@media (max-width: 520px){
+  :root{
+    --intro-pad-top: 64px;
+    --intro-hero-pad: 18px 16px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference){
+  :root{ --intro-before-anim: introSpin 14s linear infinite; }
+}
+@media (prefers-reduced-motion: reduce){
+  :root{ --intro-before-anim: none; }
+}
+
+@keyframes introSpin{
+  to{ transform: rotate(360deg); }
+}
